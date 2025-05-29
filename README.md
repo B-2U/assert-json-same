@@ -23,7 +23,7 @@ If you want to assert that one JSON value is "included" in another use
 [`assert_json_include`](macro.assert_json_include.html):
 
 ```rust
-use assert_json_diff::assert_json_include;
+use json_diff::assert_json_include;
 use serde_json::json;
 
 let a = json!({
@@ -87,7 +87,7 @@ json atoms at path ".data.users[1].id" are not equal:
 of the JSON without having to specify the whole thing. For example this test passes:
 
 ```rust
-use assert_json_diff::assert_json_include;
+use json_diff::assert_json_include;
 use serde_json::json;
 
 assert_json_include!(
@@ -103,7 +103,7 @@ assert_json_include!(
 However `expected` cannot contain additional data so this test fails:
 
 ```rust
-use assert_json_diff::assert_json_include;
+use json_diff::assert_json_include;
 use serde_json::json;
 
 assert_json_include!(
@@ -127,7 +127,7 @@ json atom at path ".a.b" is missing from actual
 If you want to ensure two JSON values are *exactly* the same, use [`assert_json_eq`](macro.assert_json_eq.html).
 
 ```rust
-use assert_json_diff::assert_json_eq;
+use json_diff::assert_json_eq;
 use serde_json::json;
 
 assert_json_eq!(
