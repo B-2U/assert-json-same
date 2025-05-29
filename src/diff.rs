@@ -280,7 +280,7 @@ impl<'a> From<Difference<'a>> for DifferenceBuf {
             path: PathBuf::from(diff.path),
             lhs: diff.lhs.cloned(),
             rhs: diff.rhs.cloned(),
-            config: diff.config.clone(),
+            config: diff.config,
         }
     }
 }
