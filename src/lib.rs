@@ -155,6 +155,8 @@
 use diff::diff;
 use serde::Serialize;
 
+use crate::diff::DifferenceBuf;
+
 mod core_ext;
 mod diff;
 
@@ -251,7 +253,7 @@ macro_rules! assert_json_eq {
 #[macro_export]
 macro_rules! assert_json_matches {
     ($lhs:expr, $rhs:expr, $config:expr $(,)?) => {{
-        if let Err(error) = $crate::assert_json_matches_no_panic(&$lhs, &$rhs, $config) {
+        if let Err(error) = $crate::assert_json_matches_no_panic_to_string(&$lhs, &$rhs, $config) {
             panic!("\n\n{}\n\n", error);
         }
     }};
@@ -259,10 +261,51 @@ macro_rules! assert_json_matches {
 
 /// Compares two JSON values without panicking.
 ///
+/// Returns a `Result` containing either `Ok(())` if the values match,
+/// or an `Err` with a `Vec<DifferenceBuf>` describing the differences.
+///
+/// # Note:
+///
+/// This function performs some cloning and may be less efficient.
+///
+/// If you only need a string error message, use [`assert_json_matches_no_panic_to_string`] or the assertion macros.
+pub fn assert_json_matches_no_panic<Lhs, Rhs>(
+    lhs: &Lhs,
+    rhs: &Rhs,
+    config: Config,
+) -> Result<(), Vec<DifferenceBuf>>
+where
+    Lhs: Serialize,
+    Rhs: Serialize,
+{
+    let lhs = serde_json::to_value(lhs).unwrap_or_else(|err| {
+        panic!(
+            "Couldn't convert left hand side value to JSON. Serde error: {}",
+            err
+        )
+    });
+    let rhs = serde_json::to_value(rhs).unwrap_or_else(|err| {
+        panic!(
+            "Couldn't convert right hand side value to JSON. Serde error: {}",
+            err
+        )
+    });
+
+    let diffs = diff(&lhs, &rhs, config);
+    let diffs: Vec<DifferenceBuf> = diffs.into_iter().map(|d| d.into()).collect();
+
+    if diffs.is_empty() {
+        Ok(())
+    } else {
+        Err(diffs)
+    }
+}
+/// Compares two JSON values without panicking.
+///
 /// Instead it returns a `Result` where the error is the message that would be passed to `panic!`.
 /// This is might be useful if you want to control how failures are reported and don't want to deal
 /// with panics.
-pub fn assert_json_matches_no_panic<Lhs, Rhs>(
+pub fn assert_json_matches_no_panic_to_string<Lhs, Rhs>(
     lhs: &Lhs,
     rhs: &Rhs,
     config: Config,
@@ -651,10 +694,10 @@ mod tests {
     }
 
     fn test_partial_match(lhs: Value, rhs: Value) -> Result<(), String> {
-        assert_json_matches_no_panic(&lhs, &rhs, Config::new(CompareMode::Inclusive))
+        assert_json_matches_no_panic_to_string(&lhs, &rhs, Config::new(CompareMode::Inclusive))
     }
 
     fn test_exact_match(lhs: Value, rhs: Value) -> Result<(), String> {
-        assert_json_matches_no_panic(&lhs, &rhs, Config::new(CompareMode::Strict))
+        assert_json_matches_no_panic_to_string(&lhs, &rhs, Config::new(CompareMode::Strict))
     }
 }

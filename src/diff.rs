@@ -201,7 +201,7 @@ impl<'a, 'b> DiffFolder<'a, 'b> {
 }
 
 #[derive(Debug, PartialEq)]
-pub(crate) struct Difference<'a> {
+pub struct Difference<'a> {
     path: Path<'a>,
     lhs: Option<&'a Value>,
     rhs: Option<&'a Value>,
@@ -252,6 +252,32 @@ impl<'a> fmt::Display for Difference<'a> {
     }
 }
 
+impl Difference<'_> {
+    /// Returns a string representation of the difference, suitable for display.
+    pub fn display(&self) -> String {
+        self.to_string()
+    }
+}
+
+#[derive(Debug, PartialEq)]
+pub struct DifferenceBuf {
+    path: PathBuf,
+    lhs: Option<Value>,
+    rhs: Option<Value>,
+    config: Config,
+}
+
+impl<'a> From<Difference<'a>> for DifferenceBuf {
+    fn from(diff: Difference<'a>) -> Self {
+        DifferenceBuf {
+            path: PathBuf::from(diff.path),
+            lhs: diff.lhs.cloned(),
+            rhs: diff.rhs.cloned(),
+            config: diff.config.clone(),
+        }
+    }
+}
+
 #[derive(Debug, Clone, PartialEq)]
 enum Path<'a> {
     Root,
@@ -285,10 +311,39 @@ impl<'a> fmt::Display for Path<'a> {
     }
 }
 
+#[derive(Debug, Clone, PartialEq)]
+enum PathBuf {
+    Root,
+    Keys(Vec<KeyBuf>),
+}
+
+impl<'a> From<Path<'a>> for PathBuf {
+    fn from(path: Path<'a>) -> Self {
+        match path {
+            Path::Root => PathBuf::Root,
+            Path::Keys(keys) => PathBuf::Keys(keys.into_iter().map(KeyBuf::from).collect()),
+        }
+    }
+}
 #[derive(Debug, Copy, Clone, PartialEq)]
 enum Key<'a> {
     Idx(usize),
     Field(&'a str),
+}
+
+#[derive(Debug, Clone, PartialEq)]
+enum KeyBuf {
+    Idx(usize),
+    Field(String),
+}
+
+impl<'a> From<Key<'a>> for KeyBuf {
+    fn from(key: Key<'a>) -> Self {
+        match key {
+            Key::Idx(idx) => KeyBuf::Idx(idx),
+            Key::Field(field) => KeyBuf::Field(field.to_owned()),
+        }
+    }
 }
 
 impl<'a> fmt::Display for Key<'a> {
