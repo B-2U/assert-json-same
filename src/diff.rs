@@ -50,7 +50,7 @@ macro_rules! direct_compare {
     };
 }
 
-impl<'a, 'b> DiffFolder<'a, 'b> {
+impl<'a> DiffFolder<'a, '_> {
     direct_compare!(on_null);
     direct_compare!(on_bool);
     direct_compare!(on_string);
@@ -215,7 +215,7 @@ pub struct Difference<'a> {
     config: Config,
 }
 
-impl<'a> fmt::Display for Difference<'a> {
+impl fmt::Display for Difference<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let json_to_string = |json: &Value| serde_json::to_string_pretty(json).unwrap();
 
@@ -304,7 +304,7 @@ impl<'a> Path<'a> {
     }
 }
 
-impl<'a> fmt::Display for Path<'a> {
+impl fmt::Display for Path<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
             Path::Root => write!(f, "(root)"),
@@ -353,7 +353,7 @@ impl<'a> From<Key<'a>> for KeyBuf {
     }
 }
 
-impl<'a> fmt::Display for Key<'a> {
+impl fmt::Display for Key<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
             Key::Idx(idx) => write!(f, "[{}]", idx),

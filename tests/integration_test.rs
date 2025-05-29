@@ -1,4 +1,4 @@
-use json_diff::{
+use assert_json_same::{
     assert_json_eq, assert_json_include, assert_json_matches,
     assert_json_matches_no_panic_to_string, CompareMode, Config, NumericMode,
 };
