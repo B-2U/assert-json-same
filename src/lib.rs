@@ -342,7 +342,7 @@ where
 }
 
 /// Configuration for how JSON values should be compared.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 #[allow(missing_copy_implementations)]
 pub struct Config {
     pub(crate) compare_mode: CompareMode,
@@ -390,12 +390,15 @@ pub enum CompareMode {
 }
 
 /// How should numbers be compared.
-#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+#[derive(Debug, Copy, Clone, PartialEq)]
 pub enum NumericMode {
     /// Different numeric types aren't considered equal.
     Strict,
     /// All numeric types are converted to float before comparison.
     AssumeFloat,
+
+    /// All numeric types are converted to integer before comparison, floats are considered equal if they differ by at most this epsilon value.
+    AssumeFloatEpsilon(f64),
 }
 
 #[cfg(test)]

@@ -16,6 +16,7 @@ documentation = "https://docs.rs/json-diff"
 edition = "2018"
 
 [dependencies]
+float-cmp = "0.10.0"
 serde_json = "1"
 serde = "1"
 

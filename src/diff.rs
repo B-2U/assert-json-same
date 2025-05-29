@@ -1,5 +1,6 @@
 use crate::core_ext::{Indent, Indexes};
 use crate::{CompareMode, Config, NumericMode};
+use float_cmp::{ApproxEq, FloatMargin};
 use serde_json::Value;
 use std::{collections::HashSet, fmt};
 
@@ -58,6 +59,12 @@ impl<'a, 'b> DiffFolder<'a, 'b> {
         let is_equal = match self.config.numeric_mode {
             NumericMode::Strict => self.rhs == lhs,
             NumericMode::AssumeFloat => self.rhs.as_f64() == lhs.as_f64(),
+            NumericMode::AssumeFloatEpsilon(epsilon) => match (lhs.as_f64(), self.rhs.as_f64()) {
+                (Some(lhs_f64), Some(rhs_f64)) => {
+                    lhs_f64.approx_eq(rhs_f64, float_cmp::F64Margin::default().epsilon(epsilon))
+                }
+                _ => false,
+            },
         };
         if !is_equal {
             self.acc.push(Difference {
@@ -582,6 +589,27 @@ mod test {
 
         let json = json!({ "a": 1 });
         let diffs = diff(&json, &json, Config::new(CompareMode::Strict));
-        assert_eq!(diffs, vec![]);
+        assert_eq!(diffs.len(), 0);
+    }
+
+    #[test]
+    fn test_floats_epsilon() {
+        let actual = json!(1.15);
+        let expected = json!(1);
+        let diffs = diff(
+            &actual,
+            &expected,
+            Config::new(CompareMode::Inclusive).numeric_mode(NumericMode::AssumeFloatEpsilon(0.2)),
+        );
+        assert_eq!(diffs.len(), 0);
+
+        let actual = json!(1.25);
+        let expected = json!(1);
+        let diffs = diff(
+            &actual,
+            &expected,
+            Config::new(CompareMode::Inclusive).numeric_mode(NumericMode::AssumeFloatEpsilon(0.2)),
+        );
+        assert_eq!(diffs.len(), 1);
     }
 }
