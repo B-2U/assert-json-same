@@ -43,7 +43,7 @@ macro_rules! direct_compare {
                     lhs: Some(lhs),
                     rhs: Some(&self.rhs),
                     path: self.path.clone(),
-                    config: self.config.clone(),
+                    config: self.config,
                 });
             }
         }
@@ -71,7 +71,7 @@ impl<'a, 'b> DiffFolder<'a, 'b> {
                 lhs: Some(lhs),
                 rhs: Some(self.rhs),
                 path: self.path.clone(),
-                config: self.config.clone(),
+                config: self.config,
             });
         }
     }
@@ -86,13 +86,13 @@ impl<'a, 'b> DiffFolder<'a, 'b> {
                         let path = self.path.append(Key::Idx(idx));
 
                         if let Some(lhs) = lhs.get(idx) {
-                            diff_with(lhs, rhs, self.config.clone(), path, self.acc)
+                            diff_with(lhs, rhs, self.config, path, self.acc)
                         } else {
                             self.acc.push(Difference {
                                 lhs: None,
                                 rhs: Some(self.rhs),
                                 path,
-                                config: self.config.clone(),
+                                config: self.config,
                             });
                         }
                     }
@@ -108,14 +108,14 @@ impl<'a, 'b> DiffFolder<'a, 'b> {
 
                         match (lhs.get(key), rhs.get(key)) {
                             (Some(lhs), Some(rhs)) => {
-                                diff_with(lhs, rhs, self.config.clone(), path, self.acc);
+                                diff_with(lhs, rhs, self.config, path, self.acc);
                             }
                             (None, Some(rhs)) => {
                                 self.acc.push(Difference {
                                     lhs: None,
                                     rhs: Some(rhs),
                                     path,
-                                    config: self.config.clone(),
+                                    config: self.config,
                                 });
                             }
                             (Some(lhs), None) => {
@@ -123,7 +123,7 @@ impl<'a, 'b> DiffFolder<'a, 'b> {
                                     lhs: Some(lhs),
                                     rhs: None,
                                     path,
-                                    config: self.config.clone(),
+                                    config: self.config,
                                 });
                             }
                             (None, None) => {
@@ -138,7 +138,7 @@ impl<'a, 'b> DiffFolder<'a, 'b> {
                 lhs: Some(lhs),
                 rhs: Some(self.rhs),
                 path: self.path.clone(),
-                config: self.config.clone(),
+                config: self.config,
             });
         }
     }
@@ -153,13 +153,13 @@ impl<'a, 'b> DiffFolder<'a, 'b> {
                         let path = self.path.append(Key::Field(key));
 
                         if let Some(lhs) = lhs.get(key) {
-                            diff_with(lhs, rhs, self.config.clone(), path, self.acc)
+                            diff_with(lhs, rhs, self.config, path, self.acc)
                         } else {
                             self.acc.push(Difference {
                                 lhs: None,
                                 rhs: Some(self.rhs),
                                 path,
-                                config: self.config.clone(),
+                                config: self.config,
                             });
                         }
                     }
@@ -171,14 +171,14 @@ impl<'a, 'b> DiffFolder<'a, 'b> {
 
                         match (lhs.get(key), rhs.get(key)) {
                             (Some(lhs), Some(rhs)) => {
-                                diff_with(lhs, rhs, self.config.clone(), path, self.acc);
+                                diff_with(lhs, rhs, self.config, path, self.acc);
                             }
                             (None, Some(rhs)) => {
                                 self.acc.push(Difference {
                                     lhs: None,
                                     rhs: Some(rhs),
                                     path,
-                                    config: self.config.clone(),
+                                    config: self.config,
                                 });
                             }
                             (Some(lhs), None) => {
@@ -186,7 +186,7 @@ impl<'a, 'b> DiffFolder<'a, 'b> {
                                     lhs: Some(lhs),
                                     rhs: None,
                                     path,
-                                    config: self.config.clone(),
+                                    config: self.config,
                                 });
                             }
                             (None, None) => {
@@ -201,7 +201,7 @@ impl<'a, 'b> DiffFolder<'a, 'b> {
                 lhs: Some(lhs),
                 rhs: Some(self.rhs),
                 path: self.path.clone(),
-                config: self.config.clone(),
+                config: self.config,
             });
         }
     }
