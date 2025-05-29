@@ -1,7 +1,7 @@
 [![Crates.io](https://img.shields.io/crates/v/assert-json-same.svg)](https://crates.io/crates/assert-json-same)
 [![Docs](https://docs.rs/assert-json-same/badge.svg)](https://docs.rs/assert-json-same)
-[![dependency status](https://deps.rs/repo/github/davidpdrsn/assert-json-same/status.svg)](https://deps.rs/repo/github/davidpdrsn/assert-json-same)
-[![Build status](https://github.com/davidpdrsn/assert-json-same/workflows/CI/badge.svg)](https://github.com/davidpdrsn/assert-json-same/actions)
+[![dependency status](https://deps.rs/repo/github/b-2u/assert-json-same/status.svg)](https://deps.rs/repo/github/b-2u/assert-json-same)
+[![Build status](https://github.com/b-2u/assert-json-same/workflows/CI/badge.svg)](https://github.com/b-2u/assert-json-same/actions)
 ![maintenance-status](https://img.shields.io/badge/maintenance-passively--maintained-yellowgreen.svg)
 
 # assert-json-same
