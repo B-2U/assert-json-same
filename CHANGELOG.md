@@ -12,6 +12,15 @@ for Rust libraries in [RFC #1105](https://github.com/rust-lang/rfcs/blob/master/
 
 None.
 
+## 3.0.0 - 2025-05-30
+
+- Expose `Difference<'_>`, introduce owned types `DifferenceBuf`, `PathBuf` and `KeyBuf` as a workaround of dealing with lifetime
+- Support compare floats with tolerance, with some code stole from https://github.com/davidpdrsn/assert-json-diff/pull/34
+
+### Breaking changes
+
+- The assert function `assert_json_matches_no_panic()` now return a struct `DifferenceBuf` instead for further processing, and the original one has been renamed `assert_json_matches_no_panic_to_string()`
+
 ## 2.0.2 - 2022-06-29
 
 - Don't move the `Value`s being compared in `assert_json_matches`
@@ -22,7 +31,7 @@ None.
 
 ## 2.0.0 - 2021-01-23
 
-## Unreleased
+### Unreleased
 
 - A less strict numeric mode for comparisons is now supported. The `AssumeFloat` mode will make `1 == 1.0`. This mode can be set via `Config::numeric_mode`.
 - A panicking `assert_json_matches` macro has been added which takes a `Config`.
